@@ -2,10 +2,12 @@ import React from 'react'
 import bloodDonor from '../../assets/bloodDonor.avif'
 import backgroundImage from '../../assets/donor_background.jpg'
 import { Link } from 'react-router-dom'
+import Navbar from '../../components/Navbar'
 
 const Login = () => {
     return (
         <>
+        <Navbar/>
             <section className="bg-gray-50 bg-cover min-h-screen flex box-border justify-center items-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
                 <div className="bg-red-500 bg-opacity-70 rounded-2xl flex max-w-3xl p-5 items-center">
                     <div className="md:w-1/2 px-8">
