@@ -1,10 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import bloodDonor from '../../assets/bloodDonor.avif'
 import backgroundImage from '../../assets/donor_background.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar'
+import { login } from '../../services/apis/user'
+import { toast } from 'sonner'
 
 const Login = () => {
+
+    const [mobile,setMobile] = useState(null)
+    const [password,setPassword] = useState(null)
+    const [show,setShow] = useState(false)
+
+    const navigate = useNavigate()
+
+    const handleLogin = async(e)=>{
+        e.preventDefault()
+        console.log(mobile)
+        const response = await login({mobile,password})
+        console.log("resss",response)
+        if(response){
+            navigate('/')
+            return toast.success(response.data.message)
+        }
+    }
+
     return (
         <>
         <Navbar/>
@@ -15,22 +35,28 @@ const Login = () => {
                         <p className="text-sm mt-2 text-white">
                             If you already a member, easily log in now.
                         </p>
-                        <form action="" className="flex flex-col gap-4">
+                        <form onSubmit={handleLogin} className="flex flex-col gap-4">
                             <input
                                 className="p-2 mt-8 rounded-xl border outline-none"
                                 type="text"
                                 name="mobile"
                                 placeholder="Mobile Number"
+                                value={mobile}
+                                onChange={(e)=>setMobile(e.target.value)}
                             />
                             <div className="relative">
                                 <input
                                     className="p-2 rounded-xl border w-full outline-none"
-                                    type="password"
+                                    // type="password"
+                                    type={show ? 'text' : 'password'} 
                                     name="password"
                                     id="password"
                                     placeholder="Password"
+                                    value={password}
+                                    onChange={(e)=>setPassword(e.target.value)}
                                 />
                                 <svg
+                                    onClick={()=>setShow(!show)}
                                     xmlns="http://www.w3.org/2000/svg"
                                     width={16}
                                     height={16}
@@ -58,7 +84,6 @@ const Login = () => {
                             
                             <button
                                 className="bg-gray-600 text-white py-2 rounded-xl hover:scale-105 duration-300 hover:bg-[#206ab1] font-medium"
-                                type="submit"
                             >
                                 Login
                             </button>

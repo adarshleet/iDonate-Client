@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import bloodDonor from '../../assets/bloodDonor.avif'
 import backgroundImage from '../../assets/donor_background.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { verifyOtp } from '../../services/apis/user'
 
 const VerifyOtp = () => {
 
-    const [timer,setTimer] = useState(10)
+    const [timer,setTimer] = useState(60)
+    const [otp,setOtp] = useState(null)
+
+    const navigate = useNavigate()
+    const location = useLocation();
+
+    const {value,mobile} = location.state;
+
+    useEffect(()=>{
+        console.log("here",value,mobile)
+        if(!value){
+            navigate('/signup')
+        }
+    },[])
 
     useEffect(() => {
         // Start the interval
@@ -23,6 +37,14 @@ const VerifyOtp = () => {
         return () => clearInterval(interval);
     }, [timer]);
 
+
+    //handle verifying otp
+    const handleVerifyOtp = async(e)=>{
+        e.preventDefault()
+        const response = await verifyOtp({mobile:mobile,otp:otp})
+        console.log(response,'verfiyyy')
+    }
+
     return (
         <>
             <section className="bg-gray-50 bg-cover min-h-screen flex box-border justify-center items-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -30,9 +52,9 @@ const VerifyOtp = () => {
                     <div className="md:w-1/2 px-8">
                         <h2 className="font-bold text-3xl text-white">Verify OTP</h2>
                         <p className="text-sm text-white">
-                            Please Enter the OTP for 9847587401
+                            Please Enter the OTP for {mobile}
                         </p>
-                        <form action="" className="flex flex-col gap-3 w-72">
+                        <form onSubmit={handleVerifyOtp} className="flex flex-col gap-3 w-72">
                             <div>
                                 <input
                                     className="p-2 mt-4 mb-1.5 rounded-xl border outline-none w-full"
@@ -44,6 +66,8 @@ const VerifyOtp = () => {
                                     onInput={(e) => {
                                         e.target.value = e.target.value.replace(/[^0-9]/g, ''); // Allow only numbers
                                     }}
+                                    value={otp}
+                                    onChange={(e)=>setOtp(e.target.value)}
                                 />
                                 <div className='flex w-full justify-between text-xs'>
                                     <button>00:{timer>9 ? timer : `0${timer}`}</button>

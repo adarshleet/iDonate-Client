@@ -1,10 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import bloodDonor from '../../assets/bloodDonor.avif'
 import backgroundImage from '../../assets/donor_background.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar'
+import { signup } from '../../services/apis/user'
+import { toast } from 'sonner'
 
 const Signup = () => {
+
+    const [mobile,setMobile] = useState(null)
+    const [name,setName] = useState(null)
+    const [password,setPassword] = useState(null)
+    const [confirmPassword,setConfirmPassword] = useState(null)
+
+    const navigate = useNavigate()
+
+    const handleSignup = async(e)=>{
+        e.preventDefault()
+        console.log(mobile)
+        const response = await signup({name,mobile,password})
+        navigate('/verifyOtp', { state: { value: true,mobile:mobile } });
+    }
+
     return (
         <>
         <Navbar/>
@@ -15,20 +32,24 @@ const Signup = () => {
                         <p className="text-sm mt-2 text-white">
                             Create a new account.
                         </p>
-                        <form action="" className="flex flex-col gap-3 w-72">
+                        <form onSubmit={handleSignup} className="flex flex-col gap-3 w-72">
                             <input
                                 className="p-2 mt-6 rounded-xl border outline-none"
                                 type="text"
                                 name="Name"
                                 placeholder="Name"
+                                value={name}
+                                onChange={(e)=>setName(e.target.value)}
                             />
                             <input
                                 className="p-2 rounded-xl border outline-none"
                                 type="text"
                                 name="mobile"
                                 placeholder="Mobile Number"
+                                value={mobile}
+                                onChange={(e)=>setMobile(e.target.value)}
                             />
-                            <select
+                            {/* <select
                                 className="p-2 rounded-xl border outline-none text-gray-400"
                                 name="bloodGroup"
                             >
@@ -65,7 +86,7 @@ const Signup = () => {
                                 <option value="Pathanamthitta">Pathanamthitta</option>
                                 <option value="Kollam">Kollam</option>
                                 <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                            </select>
+                            </select> */}
 
 
                             <div className="relative">
@@ -73,8 +94,9 @@ const Signup = () => {
                                     className="p-2 rounded-xl border w-full outline-none"
                                     type="password"
                                     name="password"
-                                    id="password"
                                     placeholder="Password"
+                                    value={password}
+                                    onChange={(e)=>setPassword(e.target.value)}
                                 />
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -106,8 +128,9 @@ const Signup = () => {
                                     className="p-2 rounded-xl border w-full outline-none"
                                     type="password"
                                     name="password"
-                                    id="password"
                                     placeholder="Confirm Password"
+                                    value={confirmPassword}
+                                    onChange={(e)=>setConfirmPassword(e.target.value)}
                                 />
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +159,7 @@ const Signup = () => {
                             </div>
                             <button
                                 className="bg-gray-600 text-white py-2 rounded-xl hover:scale-105 duration-300 hover:bg-[#206ab1] font-medium"
-                                type="submit"
+                                type='submit'
                             >
                                 SignUp
                             </button>
